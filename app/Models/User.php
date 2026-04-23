@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -33,16 +31,20 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function getAuthIdentifierName()
+    {
+        return 'username';
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->password; 
+    }
+
     // Relasi: Satu pengguna bisa punya banyak pengaduan
     public function pengaduan()
     {
         return $this->hasMany(Pengaduan::class, 'id_user');
     }
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+
 }
